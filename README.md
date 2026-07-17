@@ -41,3 +41,18 @@ Unit tests cover the deck, play validation, and the turn engine (stacking, rever
 npm run build   # builds the client into client/dist
 npm start       # the server also serves client/dist on port 3001
 ```
+
+## Docker
+
+```bash
+docker build -t ahmadmcer/uno-game-js .
+docker run -d -p 3001:3001 --name uno-game ahmadmcer/uno-game-js
+```
+
+Or with compose:
+
+```bash
+docker compose up -d --build
+```
+
+The image is multi-stage: it installs server deps, builds the Vite client, and runs `node src/index.js` on port 3001.
