@@ -1,22 +1,18 @@
-FROM node:20-alpine AS deps
+FROM node:20-alpine AS deps-root
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY server/package.json ./server/package.json
 COPY client/package.json ./client/package.json
-RUN npm ci --workspaces=false || npm install
+RUN npm ci
 
 FROM node:20-alpine AS build-client
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY package.json package-lock.json ./
+COPY --from=deps-root /app/node_modules ./node_modules
+COPY --from=deps-root /app/package.json ./package.json
+COPY --from=deps-root /app/package-lock.json ./package-lock.json
 COPY client ./client
-RUN npm run build -w client
-
-FROM node:20-alpine AS deps-server
-WORKDIR /app
-COPY package.json package-lock.json ./
-COPY server/package.json ./server/package.json
-RUN npm install --omit=dev --workspace=server
+WORKDIR /app/client
+RUN npx --no-install vite build
 
 FROM node:20-alpine AS runtime
 WORKDIR /app
@@ -26,7 +22,7 @@ EXPOSE 3001
 
 COPY package.json package-lock.json ./
 COPY server ./server
-COPY --from=deps-server /app/node_modules ./node_modules
+RUN npm install --omit=dev --workspace=server
 COPY --from=build-client /app/client/dist ./client/dist
 
 WORKDIR /app/server
