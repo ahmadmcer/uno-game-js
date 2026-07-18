@@ -26,6 +26,7 @@ export class RoomManager {
       rules: { stacking: false, drawUntilPlayable: false, jumpIn: false },
       status: 'lobby',
       game: null,
+      chat: [],
       botTimer: null,
       unoTimer: null,
       deleteTimer: null,

@@ -1,8 +1,14 @@
-export default function EventToast({ toasts }) {
+export default function EventToast({ toasts, raised }) {
   return (
-    <div className="toasts">
+    <div className={`toasts ${raised ? 'raised' : ''}`}>
       {toasts.map((t) => (
-        <div key={t.id} className={`toast ${t.error ? 'error' : ''}`}>{t.text}</div>
+        <div
+          key={t.id}
+          className={`toast ${t.error ? 'error' : ''} ${t.chat ? 'chat-toast' : ''}`}
+          onClick={t.onClick}
+        >
+          {t.text}
+        </div>
       ))}
     </div>
   );

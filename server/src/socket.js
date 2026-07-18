@@ -5,6 +5,9 @@ import { botAction } from './game/bot.js';
 const TAKEOVER_GRACE_MS = 30_000;
 const LOBBY_GRACE_MS = 15_000;
 const EMPTY_ROOM_TTL_MS = 5 * 60_000;
+const CHAT_MAX_LENGTH = 200;
+const CHAT_HISTORY = 50;
+const CHAT_MIN_INTERVAL_MS = 400;
 
 const cleanName = (name) => {
   const n = String(name ?? '').trim().slice(0, 20);
@@ -183,6 +186,7 @@ export function attachSockets(io) {
       clearTimeout(existing.deleteTimer);
       socket.join(existing.code);
       socket.emit('me', { playerId: player.id });
+      socket.emit('chat:history', existing.chat);
       broadcastRoom(existing);
       if (existing.game) broadcastGame(existing);
       scheduleBots(existing);
@@ -229,6 +233,7 @@ export function attachSockets(io) {
       room.players[0].socketId = socket.id;
       socket.join(room.code);
       socket.emit('me', { playerId: room.players[0].id });
+      socket.emit('chat:history', room.chat);
       broadcastRoom(room);
     });
 
@@ -248,6 +253,7 @@ export function attachSockets(io) {
       player.socketId = socket.id;
       socket.join(room.code);
       socket.emit('me', { playerId: player.id });
+      socket.emit('chat:history', room.chat);
       broadcastRoom(room);
     });
 
@@ -267,6 +273,27 @@ export function attachSockets(io) {
         if (key in payload) room.rules[key] = !!payload[key];
       }
       broadcastRoom(room);
+    });
+
+    on('chat:send', ({ text }) => {
+      const room = requireRoom();
+      const player = myPlayer(room);
+      const clean = String(text ?? '').trim().slice(0, CHAT_MAX_LENGTH);
+      if (!clean) throw new GameError("Can't send an empty message");
+      const now = Date.now();
+      if (player.lastChatAt && now - player.lastChatAt < CHAT_MIN_INTERVAL_MS) return;
+      player.lastChatAt = now;
+
+      const msg = {
+        id: `m${now.toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+        playerId: player.id,
+        name: player.name,
+        text: clean,
+        ts: now,
+      };
+      room.chat.push(msg);
+      if (room.chat.length > CHAT_HISTORY) room.chat.splice(0, room.chat.length - CHAT_HISTORY);
+      io.to(room.code).emit('chat:message', msg);
     });
 
     on('room:addBot', () => {
