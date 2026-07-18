@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy, faCrown } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
 
 export default function GameOver({ game, room, me, onLeave }) {
@@ -8,7 +10,9 @@ export default function GameOver({ game, room, me, onLeave }) {
   return (
     <div className="overlay">
       <div className="modal">
-        <div className="gameover-emoji">{youWon ? '🏆' : '🎉'}</div>
+        <div className="gameover-emoji" style={{ color: '#ffd94a' }}>
+          <FontAwesomeIcon icon={youWon ? faTrophy : faCrown} />
+        </div>
         <h2>{youWon ? 'You win!' : `${winner?.name ?? 'Someone'} wins!`}</h2>
         {isHost ? (
           <button className="btn btn-primary" onClick={() => socket.emit('game:rematch')}>

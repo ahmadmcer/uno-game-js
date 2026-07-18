@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotateRight, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
 import { canPlay, canJumpIn } from '../rules';
 import Card from './Card';
@@ -100,7 +102,9 @@ export default function GameTable({ room, game, me, onLeave }) {
         <div className={`pile glow-${game.activeColor}`}>
           <Card card={top} />
         </div>
-        <div className={`direction ${game.direction === -1 ? 'ccw' : ''}`}>⟳</div>
+        <div className={`direction ${game.direction === -1 ? 'ccw' : ''}`}>
+          <FontAwesomeIcon icon={game.direction === -1 ? faRotateLeft : faRotateRight} />
+        </div>
       </div>
 
       <div className={`status-bar ${myTurn ? 'your-turn' : ''}`}>{status}</div>

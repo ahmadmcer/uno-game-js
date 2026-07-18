@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRobot, faUser, faXmark, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
 
 const RULE_DEFS = [
@@ -34,13 +36,17 @@ export default function Lobby({ room, me, onLeave }) {
             <div className="label">Room code</div>
             <div className="room-code">{room.code}</div>
           </div>
-          <button className="btn btn-ghost" onClick={copy}>{copied ? 'Copied!' : 'Copy'}</button>
+          <button className="btn btn-ghost" onClick={copy}>
+            <FontAwesomeIcon icon={copied ? faCheck : faCopy} /> {copied ? 'Copied!' : 'Copy'}
+          </button>
         </div>
 
         <div className="players">
           {room.players.map((p) => (
             <div key={p.id} className="player-row">
-              <span className="player-icon">{p.isBot ? '🤖' : '🙂'}</span>
+              <span className="player-icon">
+                <FontAwesomeIcon icon={p.isBot ? faRobot : faUser} />
+              </span>
               <span className="player-name">{p.name}</span>
               {p.id === room.hostId && <span className="tag">host</span>}
               {p.id === me && <span className="tag you">you</span>}
@@ -51,7 +57,7 @@ export default function Lobby({ room, me, onLeave }) {
                   title="Remove bot"
                   onClick={() => socket.emit('room:removeBot', { botId: p.id })}
                 >
-                  ✕
+                  <FontAwesomeIcon icon={faXmark} />
                 </button>
               )}
             </div>

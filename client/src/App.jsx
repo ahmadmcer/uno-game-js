@@ -40,7 +40,7 @@ export default function App() {
       const ctx = chatCtx.current;
       if (msg.playerId !== ctx.me && !ctx.chatOpen) {
         const preview = msg.text.length > 60 ? `${msg.text.slice(0, 60)}…` : msg.text;
-        addToast(`💬 ${msg.name}: ${preview}`, { chat: true, duration: 8000, onClick: () => setChatOpen(true) });
+        addToast(`${msg.name}: ${preview}`, { chat: true, duration: 8000, onClick: () => setChatOpen(true) });
       }
     };
     const onEvents = (events) => events.forEach((e) => addToast(e.text));

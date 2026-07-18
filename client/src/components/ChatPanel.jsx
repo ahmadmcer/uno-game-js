@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComments, faXmark, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
 
 export default function ChatPanel({ messages, me, open, setOpen }) {
@@ -28,7 +30,9 @@ export default function ChatPanel({ messages, me, open, setOpen }) {
         <div className="chat-panel">
           <div className="chat-head">
             <span className="label">Chat</span>
-            <button className="btn-x" title="Close chat" onClick={() => setOpen(false)}>✕</button>
+            <button className="btn-x" title="Close chat" onClick={() => setOpen(false)}>
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
           </div>
           <div className="chat-list" ref={listRef}>
             {messages.length === 0 && <div className="hint">Say hi 👋</div>}
@@ -48,12 +52,14 @@ export default function ChatPanel({ messages, me, open, setOpen }) {
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
             />
-            <button className="btn btn-ghost btn-sm" onClick={send}>Send</button>
+            <button className="btn btn-ghost btn-sm" title="Send" aria-label="Send" onClick={send}>
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </button>
           </div>
         </div>
       )}
       <button className="chat-fab" title="Chat" onClick={() => setOpen((o) => !o)}>
-        💬
+        <FontAwesomeIcon icon={faComments} />
         {unread > 0 && <span className="chat-badge">{unread}</span>}
       </button>
     </div>

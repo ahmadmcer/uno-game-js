@@ -356,6 +356,7 @@ input[type='text'] {
   width: 52px; height: 52px;
   border: none; border-radius: 50%;
   background: rgba(0, 0, 0, 0.55);
+  color: #fff;
   font-size: 24px; cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   position: relative;

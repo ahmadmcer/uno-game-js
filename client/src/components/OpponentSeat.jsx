@@ -1,10 +1,12 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import Card from './Card';
 
 export default function OpponentSeat({ player }) {
   return (
     <div className={`seat ${player.isCurrent ? 'current' : ''} ${!player.connected ? 'offline' : ''}`}>
       <div className="seat-name">
-        {player.isBot ? '🤖 ' : ''}
+        {player.isBot && <><FontAwesomeIcon icon={faRobot} />{' '}</>}
         {player.name}
       </div>
       <div className="seat-cards">
