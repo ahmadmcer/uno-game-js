@@ -1,6 +1,10 @@
-const SYMBOLS = { skip: '⊘', reverse: '⇄', draw2: '+2', wild4: '+4', wild: '★' };
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBan, faRightLeft, faStar } from '@fortawesome/free-solid-svg-icons';
 
-export default function Card({ card, faceDown, small, playable, jumpable, dimmed, onClick }) {
+const ICONS = { skip: faBan, reverse: faRightLeft, wild: faStar };
+const TEXT = { draw2: '+2', wild4: '+4' };
+
+export default function Card({ card, faceDown, small, playable, jumpable, dimmed, entering, enterDelay, onClick }) {
   const cls = ['card'];
   if (small) cls.push('card-small');
 
@@ -18,12 +22,19 @@ export default function Card({ card, faceDown, small, playable, jumpable, dimmed
   if (playable) cls.push('playable');
   if (jumpable) cls.push('jumpable');
   if (dimmed && !playable && !jumpable) cls.push('dimmed');
+  if (entering) cls.push('card-enter');
 
-  const label = SYMBOLS[card.value] ?? card.value;
+  const label = ICONS[card.value]
+    ? <FontAwesomeIcon icon={ICONS[card.value]} />
+    : (TEXT[card.value] ?? card.value);
   const wild = card.color === 'wild';
 
   return (
-    <div className={cls.join(' ')} onClick={onClick}>
+    <div
+      className={cls.join(' ')}
+      style={entering ? { animationDelay: `${enterDelay || 0}ms` } : undefined}
+      onClick={onClick}
+    >
       <span className="corner top">{label}</span>
       <div className="card-oval" />
       {wild ? (

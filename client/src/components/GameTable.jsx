@@ -96,11 +96,13 @@ export default function GameTable({ room, game, me, onLeave }) {
           onClick={() => myTurn && !drawnId && socket.emit('game:draw')}
         >
           <Card faceDown />
-          <span className="pile-count">{game.drawPileCount}</span>
+          <span key={game.drawPileCount} className="pile-count">{game.drawPileCount}</span>
           {game.pendingDraw > 0 && <span className="pending-badge">+{game.pendingDraw}</span>}
         </div>
         <div className={`pile glow-${game.activeColor}`}>
-          <Card card={top} />
+          <div key={top.id} className="played-wrap">
+            <Card card={top} />
+          </div>
         </div>
         <div className={`direction ${game.direction === -1 ? 'ccw' : ''}`}>
           <FontAwesomeIcon icon={game.direction === -1 ? faRotateLeft : faRotateRight} />

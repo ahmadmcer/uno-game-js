@@ -11,7 +11,7 @@ export default function OpponentSeat({ player }) {
       </div>
       <div className="seat-cards">
         <Card faceDown small />
-        <span>×{player.cardCount}</span>
+        <span key={player.cardCount} className="seat-count">×{player.cardCount}</span>
       </div>
       {player.cardCount === 1 && (
         <span className="uno-badge">{player.unoCalled ? 'UNO!' : '1 card!'}</span>

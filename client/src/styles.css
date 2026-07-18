@@ -251,6 +251,9 @@ input[type='text'] {
   font-size: 13px; font-weight: 800;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
 }
+/* text-shadow doesn't reach SVG icons — mirror it with drop-shadow */
+.card-value svg { filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.35)); }
+.corner svg { filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4)); }
 .corner.top { top: 4px; left: 8px; }
 .corner.bottom { bottom: 4px; right: 8px; transform: rotate(180deg); }
 
@@ -291,6 +294,30 @@ input[type='text'] {
 }
 .card.jumpable:hover { transform: translateY(-14px); animation: none; }
 .card.dimmed { filter: brightness(0.55); }
+
+/* ---------- Deal / play animations ---------- */
+
+/* Newly drawn cards fly into the hand from the table. Declared after
+   .jumpable so a just-dealt card animates in before it starts pulsing. */
+.card.card-enter {
+  animation: card-deal 0.3s ease-out backwards;
+}
+@keyframes card-deal {
+  from { transform: translateY(-70px) scale(0.7); opacity: 0; }
+}
+
+/* A card landing on the discard pile slaps down onto it. */
+.played-wrap { animation: card-slap 0.25s ease-out; }
+@keyframes card-slap {
+  from { transform: scale(1.4) rotate(-10deg); opacity: 0; }
+}
+
+/* Card-count badges pop when their number changes (keyed remount). */
+.pile-count { animation: count-pop 0.3s ease-out; }
+.seat-count { display: inline-block; animation: count-pop 0.3s ease-out; }
+@keyframes count-pop {
+  50% { transform: scale(1.45); }
+}
 
 .card-small { width: 42px; height: 64px; border-width: 3px; border-radius: 7px; }
 .card-small .card-logo { font-size: 12px; }
