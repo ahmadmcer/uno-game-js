@@ -2,7 +2,7 @@
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Fredoka', 'Segoe UI', system-ui, -apple-system, sans-serif;
   color: #fff;
   background: radial-gradient(circle at 50% 25%, #24734a 0%, #16472e 45%, #0b2418 100%);
   min-height: 100vh;
@@ -64,10 +64,10 @@ input[type='text'] {
 
 .logo {
   margin: 0;
+  font-family: 'Luckiest Guy', 'Segoe UI', sans-serif;
   font-size: 88px;
-  font-style: italic;
-  font-weight: 900;
-  letter-spacing: -3px;
+  font-weight: 400;
+  letter-spacing: 2px;
   color: #ffd94a;
   text-shadow: 4px 4px 0 #d92637, 9px 9px 22px rgba(0, 0, 0, 0.55);
   transform: rotate(-4deg);
@@ -257,7 +257,8 @@ input[type='text'] {
 .card-logo {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-style: italic;
+  font-family: 'Luckiest Guy', 'Segoe UI', sans-serif;
+  font-weight: 400;
   color: #ffd94a; font-size: 20px;
   transform: rotate(-18deg);
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
