@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { socket } from './socket';
+import { sfx } from './sfx';
 import Home from './components/Home';
 import Lobby from './components/Lobby';
 import GameTable from './components/GameTable';
@@ -41,10 +42,19 @@ export default function App() {
       if (msg.playerId !== ctx.me && !ctx.chatOpen) {
         const preview = msg.text.length > 60 ? `${msg.text.slice(0, 60)}…` : msg.text;
         addToast(`${msg.name}: ${preview}`, { chat: true, duration: 8000, onClick: () => setChatOpen(true) });
+        sfx.play('chat');
       }
     };
-    const onEvents = (events) => events.forEach((e) => addToast(e.text));
-    const onError = (e) => addToast(e.message, { error: true });
+    const onEvents = (events) => events.forEach((e) => {
+      addToast(e.text);
+      // Events are plain text; the UNO catch is the one alert not visible in
+      // per-player state diffs, so sniff it here.
+      if (e.text.includes('caught')) sfx.play('buzz');
+    });
+    const onError = (e) => {
+      addToast(e.message, { error: true });
+      sfx.play('buzz');
+    };
     const onConnect = () => {
       setConnected(true);
       socket.emit('game:sync');
@@ -79,6 +89,45 @@ export default function App() {
     };
   }, [addToast]);
 
+  // Card ids repeat between games (the deck is rebuilt with the same ids), so
+  // Hand can't tell a rematch deal from a draw by itself. Track deals here and
+  // remount Hand per deal via this key, computed during render so the remount
+  // lands in the same commit as the new game state.
+  const dealCount = useRef(0);
+  const lastDealGame = useRef(null);
+  if (game !== lastDealGame.current) {
+    const prev = lastDealGame.current;
+    if (game && (!prev || (prev.winnerId && !game.winnerId))) dealCount.current++;
+    lastDealGame.current = game;
+  }
+
+  // Game sounds are derived from state diffs (server events are plain text).
+  // Value comparisons make the periodic game:sync resend a no-op. Own-hand
+  // draw sounds live in Hand.jsx, synced to the per-card reveal.
+  const prevGame = useRef(null);
+  useEffect(() => {
+    const prev = prevGame.current;
+    prevGame.current = game;
+    if (!game) return;
+    // Fresh deal (first game, rematch, or rejoin): riffle only, no move diffs.
+    if (!prev || (prev.winnerId && !game.winnerId)) {
+      if (!game.winnerId) sfx.play('shuffle');
+      return;
+    }
+    if (game.topCard.id !== prev.topCard.id) sfx.play('play');
+    if (game.winnerId) {
+      if (!prev.winnerId) sfx.play(game.winnerId === me ? 'win' : 'lose');
+    } else if (game.currentPlayerId === me && prev.currentPlayerId !== me) {
+      sfx.play('turn');
+    }
+    for (const p of game.players) {
+      const was = prev.players.find((x) => x.id === p.id);
+      if (!was) continue;
+      if (p.unoCalled && !was.unoCalled) sfx.play('uno');
+      if (p.id !== me && p.cardCount > was.cardCount) sfx.play('draw');
+    }
+  }, [game, me]);
+
   const reset = useCallback(() => { setRoom(null); setGame(null); setChat([]); setChatOpen(false); }, []);
 
   let screen;
@@ -87,7 +136,7 @@ export default function App() {
   } else if (room.status === 'lobby') {
     screen = <Lobby room={room} me={me} onLeave={reset} />;
   } else if (game) {
-    screen = <GameTable room={room} game={game} me={me} onLeave={reset} />;
+    screen = <GameTable room={room} game={game} me={me} dealKey={dealCount.current} onLeave={reset} />;
   } else {
     screen = <div className="loading">Dealing cards…</div>;
   }

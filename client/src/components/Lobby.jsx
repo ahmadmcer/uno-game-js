@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faUser, faXmark, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
+import MuteButton from './MuteButton';
 
 const RULE_DEFS = [
   ['stacking', 'Stacking', 'Answer a +2/+4 with your own — the penalty piles up and passes along'],
@@ -36,9 +37,12 @@ export default function Lobby({ room, me, onLeave }) {
             <div className="label">Room code</div>
             <div className="room-code">{room.code}</div>
           </div>
-          <button className="btn btn-ghost" onClick={copy}>
-            <FontAwesomeIcon icon={copied ? faCheck : faCopy} /> {copied ? 'Copied!' : 'Copy'}
-          </button>
+          <span className="header-actions">
+            <MuteButton />
+            <button className="btn btn-ghost" onClick={copy}>
+              <FontAwesomeIcon icon={copied ? faCheck : faCopy} /> {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </span>
         </div>
 
         <div className="players">

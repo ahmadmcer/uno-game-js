@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { sfx } from '../sfx';
 import Card from './Card';
 
 const COLOR_ORDER = { red: 0, yellow: 1, green: 2, blue: 3, wild: 4 };
@@ -36,6 +37,7 @@ export default function Hand({ cards, playableIds, jumpIds, myTurn, onClickCard 
     } else {
       const added = cards.filter((c) => !prevIds.current.has(c.id));
       prevIds.current = idSet;
+      if (added.length >= 1) sfx.play('draw'); // the first (or only) card; reveals tick the rest
       if (added.length > 1) {
         for (const c of added.slice(1)) hidden.current.add(c.id);
         changed = true;
@@ -50,6 +52,7 @@ export default function Hand({ cards, playableIds, jumpIds, myTurn, onClickCard 
         if (next === undefined) return;
         hidden.current.delete(next);
         dealt.current.set(next, { delay: 0, at: Date.now() }); // animate on reveal, not batch time
+        sfx.play('draw');
         tick();
         if (hidden.current.size) revealTimer.current = setTimeout(revealNext, REVEAL_INTERVAL_MS);
       };

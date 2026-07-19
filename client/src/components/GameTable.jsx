@@ -8,8 +8,9 @@ import Hand from './Hand';
 import OpponentSeat from './OpponentSeat';
 import ColorPicker from './ColorPicker';
 import GameOver from './GameOver';
+import MuteButton from './MuteButton';
 
-export default function GameTable({ room, game, me, onLeave }) {
+export default function GameTable({ room, game, me, dealKey, onLeave }) {
   const [wildCard, setWildCard] = useState(null);
 
   const players = game.players;
@@ -82,7 +83,10 @@ export default function GameTable({ room, game, me, onLeave }) {
           {game.rules.drawUntilPlayable && <em>draw-to-match</em>}
           {game.rules.jumpIn && <em>jump-in</em>}
         </span>
-        <button className="btn btn-ghost btn-sm" onClick={leave}>Leave</button>
+        <span className="header-actions">
+          <MuteButton />
+          <button className="btn btn-ghost btn-sm" onClick={leave}>Leave</button>
+        </span>
       </div>
 
       <div className="opponents">
@@ -131,6 +135,7 @@ export default function GameTable({ room, game, me, onLeave }) {
       </div>
 
       <Hand
+        key={dealKey}
         cards={game.hand}
         playableIds={playableIds}
         jumpIds={jumpIds}
