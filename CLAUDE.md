@@ -35,6 +35,8 @@ Strictly layered; keep game logic free of I/O:
 - `socket.js` — all Socket.IO glue: event handlers, bot turn scheduling (timers on the room), UNO-catch timers, disconnect grace periods, and broadcasting. Handlers wrapped by `on()` convert thrown `GameError`s into `game:error` emissions; any other exception is logged and sent as a generic message — so game-logic code signals user-facing failures by throwing `GameError`.
 - `index.js` — HTTP server; also statically serves `client/dist` when it exists (production mode).
 
+The Socket.IO contract doubles as a public bot API: `docs/API.md` documents every event and the `stateFor` shape for external bot authors, and `examples/bot.mjs` is a standalone reference client. When changing socket events or the state shape, update both.
+
 ### Identity and reconnection
 
 Clients generate a per-tab session token (`sessionStorage`) and send it in `socket.handshake.auth.token`. The server keys everything off this token, not the socket id: reconnecting with the same token rejoins your seat, and private game state is emitted to the `player:${token}` socket room. Disconnects start grace timers — in a live game a bot takes over the seat (`takeover` flag) rather than removing the player; leaving mid-game detaches the token but keeps the seat bot-controlled so the game isn't disrupted.

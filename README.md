@@ -27,6 +27,14 @@ To play from a phone on the same Wi-Fi, open `http://<your-pc-ip>:5173`.
 - **Draw to match** — can't play? Keep drawing until you find a playable card.
 - **Jump-in** — holding a card identical to the top of the pile? Play it out of turn.
 
+## Bot API
+
+External programs can join rooms and play through the same Socket.IO protocol the web client uses — any language with a Socket.IO client works. The full event reference lives in [docs/API.md](docs/API.md), and [examples/bot.mjs](examples/bot.mjs) is a complete reference bot:
+
+```bash
+node examples/bot.mjs ABCD          # join room ABCD and start playing
+```
+
 ## Tests
 
 ```bash
