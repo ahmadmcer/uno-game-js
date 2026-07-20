@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRotateRight, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faRotateRight, faRotateLeft, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { socket } from '../socket';
 import { canPlay, canJumpIn } from '../rules';
 import Card from './Card';
@@ -9,9 +9,14 @@ import OpponentSeat from './OpponentSeat';
 import ColorPicker from './ColorPicker';
 import GameOver from './GameOver';
 import MuteButton from './MuteButton';
+import HideButton from './HideButton';
 
 export default function GameTable({ room, game, me, dealKey, onLeave }) {
   const [wildCard, setWildCard] = useState(null);
+  // Privacy screen for same-room play: `privacyOn` is the persisted preference,
+  // `revealed` is the momentary peek. Off by default.
+  const [privacyOn, setPrivacyOn] = useState(() => localStorage.getItem('uno-hide-hand') === '1');
+  const [revealed, setRevealed] = useState(false);
 
   const players = game.players;
   const myIndex = Math.max(0, players.findIndex((p) => p.id === me));
@@ -19,6 +24,19 @@ export default function GameTable({ room, game, me, dealKey, onLeave }) {
   const myTurn = game.currentPlayerId === me && !game.winnerId;
   const top = game.topCard;
   const drawnId = game.drawnPlayableCardId;
+
+  // Re-cover the hand the moment it's no longer your turn, so it isn't left
+  // exposed while you look away. You always tap to peek on your own turn.
+  useEffect(() => {
+    if (!myTurn) setRevealed(false);
+  }, [myTurn]);
+
+  const togglePrivacy = () => {
+    const next = !privacyOn;
+    setPrivacyOn(next);
+    localStorage.setItem('uno-hide-hand', next ? '1' : '0');
+    if (next) setRevealed(false);
+  };
 
   const opponents = [];
   for (let i = 1; i < players.length; i++) {
@@ -84,6 +102,7 @@ export default function GameTable({ room, game, me, dealKey, onLeave }) {
           {game.rules.jumpIn && <em>jump-in</em>}
         </span>
         <span className="header-actions">
+          <HideButton on={privacyOn} onToggle={togglePrivacy} />
           <MuteButton />
           <button className="btn btn-ghost btn-sm" onClick={leave}>Leave</button>
         </span>
@@ -134,14 +153,38 @@ export default function GameTable({ room, game, me, dealKey, onLeave }) {
         )}
       </div>
 
-      <Hand
-        key={dealKey}
-        cards={game.hand}
-        playableIds={playableIds}
-        jumpIds={jumpIds}
-        myTurn={myTurn}
-        onClickCard={clickCard}
-      />
+      <div className="hand-zone">
+        <Hand
+          key={dealKey}
+          cards={game.hand}
+          playableIds={playableIds}
+          jumpIds={jumpIds}
+          myTurn={myTurn}
+          onClickCard={clickCard}
+        />
+        {privacyOn && !game.winnerId && (
+          revealed ? (
+            <button
+              className="btn btn-ghost btn-sm hand-rehide"
+              title="Hide my cards"
+              aria-label="Hide my cards"
+              onClick={() => setRevealed(false)}
+            >
+              <FontAwesomeIcon icon={faEyeSlash} /> Hide
+            </button>
+          ) : (
+            <button
+              className="hand-cover"
+              aria-label="Reveal your cards"
+              onClick={() => setRevealed(true)}
+            >
+              <FontAwesomeIcon icon={faEyeSlash} className="hand-cover-icon" />
+              <span>Your cards are hidden</span>
+              <small>Tap to peek</small>
+            </button>
+          )
+        )}
+      </div>
 
       {wildCard && (
         <ColorPicker

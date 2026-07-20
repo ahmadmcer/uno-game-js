@@ -216,6 +216,25 @@ input[type='text'] {
 .hand .card:first-child { margin-left: 0; }
 .hand .card:hover { z-index: 5; }
 
+/* Privacy screen: covers your own hand for same-room play. Sits on top of the
+   Hand (which stays mounted, so its deal animation is undisturbed). */
+.hand-zone { position: relative; min-height: 120px; }
+.hand-cover {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; border: none; border-radius: 12px; cursor: pointer;
+  color: #fff; text-align: center;
+  background: rgba(10, 12, 20, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+.hand-cover .hand-cover-icon { font-size: 30px; opacity: 0.85; }
+.hand-cover span { font-size: 16px; font-weight: 600; }
+.hand-cover small { font-size: 12px; opacity: 0.6; }
+.hand-rehide {
+  position: absolute; top: 6px; right: 8px; z-index: 11;
+}
+
 /* ---------- Cards ---------- */
 
 .card {
@@ -442,6 +461,7 @@ input[type='text'] {
   .card { width: 58px; height: 88px; border-width: 4px; }
   .card-value { font-size: 28px; }
   .hand .card { margin-left: -28px; }
+  .hand-zone { min-height: 96px; }
   .center-area { gap: 22px; }
   .direction { font-size: 34px; }
   .room-code { font-size: 32px; }

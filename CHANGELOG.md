@@ -4,6 +4,14 @@ Notable changes to the UNO multiplayer game. The format follows
 [Keep a Changelog](https://keepachangelog.com/); the project has no version
 tags yet, so entries are grouped by date.
 
+## 2026-07-21
+
+### Added
+- **Hide your cards** — a privacy screen for playing side by side in the same
+  room. The eye toggle in the game header covers your hand; tap to peek, and it
+  re-covers automatically when your turn ends so no one can glance over and read
+  your cards. Local per-device preference, off by default.
+
 ## 2026-07-20
 
 ### Added

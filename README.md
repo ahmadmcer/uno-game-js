@@ -21,6 +21,8 @@ To play from a phone on the same Wi-Fi, open `http://<your-pc-ip>:5173`.
 2. Friends join with the code; the host can add bots and toggle house rules.
 3. Start the game. Call **UNO!** when you're down to your last card — or get caught and draw 2.
 
+Playing side by side in the same room? Tap the **eye** button in the game header to hide your hand behind a privacy screen — tap to peek, and it re-covers automatically when your turn ends, so no one can glance over and read your cards.
+
 ## House rules
 
 - **Stacking** — answer a +2/+4 with your own to pass the accumulated penalty along.
