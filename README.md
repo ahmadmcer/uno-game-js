@@ -2,7 +2,7 @@
 
 Online multiplayer UNO with game rooms, bots that fill empty seats, and optional house rules (stacking, draw-to-match, jump-in). Node.js + Socket.IO server, React + Vite client. The server is authoritative — clients only ever see their own hand.
 
-Released under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE). See [CHANGELOG.md](CHANGELOG.md) for what's new.
 
 ## Run
 
