@@ -22,6 +22,8 @@ Docker: `docker compose up -d --build`, or `docker build -t ahmadmcer/uno-game-j
 
 ## Architecture
 
+`ARCHITECTURE.md` is the full architecture document (layer contracts, data flow, invariants); the notes below are the condensed working version.
+
 Online multiplayer UNO. The **server is authoritative**: clients never see other players' hands, and all moves are validated server-side. The client and server communicate only over Socket.IO events (`room:*` and `game:*`); in dev, Vite proxies `/socket.io` to port 3001.
 
 ### Server (`server/src/`) — ESM, Express + Socket.IO
