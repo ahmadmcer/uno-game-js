@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Also read `MEMORY.md` — accumulated environment quirks, non-obvious design decisions, and verification techniques that aren't derivable from the code.
+
 ## Commands
 
 npm-workspaces monorepo with two workspaces: `server` and `client`. Run everything from the repo root.
