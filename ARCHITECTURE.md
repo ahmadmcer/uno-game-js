@@ -53,9 +53,11 @@ client/src/
   App.jsx          owns ALL state, fed only by socket events; picks the screen
   socket.js        socket singleton + per-tab session token (sessionStorage)
   rules.js         mirror of server rules for UI highlighting ONLY
+  audioCore.js     shared AudioContext singleton + autoplay unlock (sfx + bgm)
   sfx.js           synthesized Web Audio sound effects + mute persistence
+  bgm.js           generative adaptive music engine (intensity-driven layers)
   components/      Home -> Lobby -> GameTable (Hand, Card, OpponentSeat, ...)
-                   plus ChatPanel, EventToast, MuteButton
+                   plus ChatPanel, EventToast, MuteButton, MusicButton
 
 docs/API.md        socket protocol reference for external bot authors
 examples/bot.mjs   standalone reference bot exercising the whole API
@@ -143,9 +145,11 @@ Two client-side rules follow from server authority:
 - **Presentation derives from `game:state` diffs, not from event text.** Sounds
   (`sfx.js`), animations, and badges compare successive states (top card
   changed → slap; a hand grew → draw flick; `currentPlayerId` became you →
-  chime). Deck card ids repeat between deals (`c0`–`c107`), so `App.jsx` counts
-  deals and remounts `Hand` via `key={dealKey}` — id novelty alone cannot
-  distinguish a rematch from a draw.
+  chime). The adaptive music (`bgm.js`) is the same idea as a continuous signal:
+  `App.jsx` maps state to a 0–1 `intensity` (smallest hand, pending draw stack,
+  anyone on UNO) that drives the generative layers. Deck card ids repeat between
+  deals (`c0`–`c107`), so `App.jsx` counts deals and remounts `Hand` via
+  `key={dealKey}` — id novelty alone cannot distinguish a rematch from a draw.
 
 ## A turn, end to end
 

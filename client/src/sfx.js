@@ -1,5 +1,8 @@
 // Synthesized sound effects via the Web Audio API — no audio assets.
 // Everything is fire-and-forget and cosmetic: failures must never break the game.
+// The AudioContext + autoplay unlocking live in audioCore.js, shared with bgm.js.
+
+import { ensureContext as coreEnsure } from './audioCore.js';
 
 const MASTER_VOLUME = 0.25;
 // Per-sound floor between plays so rapid repeats (e.g. several opponents
@@ -15,23 +18,20 @@ const lastPlayed = new Map();
 let muted = false;
 try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch { /* storage unavailable */ }
 
+// Get the shared context and lazily build our own sub-master gain under it, so
+// SFX sit at MASTER_VOLUME independently of the music engine's gain.
 function ensureContext() {
-  if (!ctx) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    ctx = new AC();
+  const c = coreEnsure();
+  if (!c) return null;
+  if (c !== ctx) {
+    ctx = c;
     master = ctx.createGain();
     master.gain.value = MASTER_VOLUME;
     master.connect(ctx.destination);
+    noiseBuf = null; // (re)build the noise buffer against this context
   }
-  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
   return ctx;
 }
-
-// Autoplay policy: a context created before any user gesture starts suspended,
-// so grab (or resume) it on the first interaction.
-window.addEventListener('pointerdown', ensureContext, { once: true });
-window.addEventListener('keydown', ensureContext, { once: true });
 
 function tone({ freq, at = 0, duration = 0.15, peak = 0.5, type = 'sine', slideTo }) {
   const t0 = ctx.currentTime + at;

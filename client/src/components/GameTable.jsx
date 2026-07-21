@@ -9,6 +9,7 @@ import OpponentSeat from './OpponentSeat';
 import ColorPicker from './ColorPicker';
 import GameOver from './GameOver';
 import MuteButton from './MuteButton';
+import MusicButton from './MusicButton';
 import HideButton from './HideButton';
 
 export default function GameTable({ room, game, me, dealKey, onLeave }) {
@@ -103,6 +104,7 @@ export default function GameTable({ room, game, me, dealKey, onLeave }) {
         </span>
         <span className="header-actions">
           <HideButton on={privacyOn} onToggle={togglePrivacy} />
+          <MusicButton />
           <MuteButton />
           <button className="btn btn-ghost btn-sm" onClick={leave}>Leave</button>
         </span>

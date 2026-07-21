@@ -1,11 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { socket } from './socket';
 import { sfx } from './sfx';
+import { bgm } from './bgm';
 import Home from './components/Home';
 import Lobby from './components/Lobby';
 import GameTable from './components/GameTable';
 import EventToast from './components/EventToast';
 import ChatPanel from './components/ChatPanel';
+
+// Map room/game state onto the music engine's scene (phase + 0..1 intensity).
+// Tension rises as anyone nears their last card, a draw stack is pending, or
+// someone is sitting on UNO. Kept here because it reads the same state the SFX
+// diffs do.
+const INTENSITY_BY_MIN_CARDS = { 1: 0.95, 2: 0.8, 3: 0.62, 4: 0.5, 5: 0.38 };
+function sceneFromGame(room, game) {
+  if (!room) return { phase: 'off', intensity: 0 };
+  if (room.status === 'lobby' || !game) return { phase: 'lobby', intensity: 0.15 };
+  if (game.winnerId) return { phase: 'over', intensity: 0 };
+  const minCards = Math.min(...game.players.map((p) => p.cardCount));
+  let intensity = INTENSITY_BY_MIN_CARDS[minCards] ?? 0.25;
+  if (game.pendingDraw > 0) intensity = Math.min(1, intensity + 0.12);
+  if (game.players.some((p) => p.unoCalled)) intensity = Math.max(intensity, 0.85);
+  return { phase: 'play', intensity };
+}
 
 export default function App() {
   const [me, setMe] = useState(null);
@@ -127,6 +144,17 @@ export default function App() {
       if (p.id !== me && p.cardCount > was.cardCount) sfx.play('draw');
     }
   }, [game, me]);
+
+  // Feed the adaptive music engine. Value-compare (rounded intensity) so the
+  // periodic game:sync resend doesn't re-trigger transitions.
+  const prevScene = useRef({ phase: null, intensity: -1 });
+  useEffect(() => {
+    const scene = sceneFromGame(room, game);
+    const p = prevScene.current;
+    if (scene.phase === p.phase && Math.abs(scene.intensity - p.intensity) < 0.02) return;
+    prevScene.current = scene;
+    bgm.setScene(scene);
+  }, [room, game]);
 
   const reset = useCallback(() => { setRoom(null); setGame(null); setChat([]); setChatOpen(false); }, []);
 

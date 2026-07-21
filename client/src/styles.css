@@ -136,6 +136,8 @@ input[type='text'] {
 .room-tag { font-weight: 700; opacity: 0.85; }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 .mute-btn { min-width: 44px; }
+/* Music toggle: dim the note when music is off (no free music-slash glyph). */
+.music-btn.is-off { opacity: 0.45; }
 .rules-tags { display: flex; gap: 8px; }
 .rules-tags em {
   font-style: normal; font-size: 12px; font-weight: 700;

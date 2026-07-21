@@ -23,6 +23,8 @@ To play from a phone on the same Wi-Fi, open `http://<your-pc-ip>:5173`.
 
 Playing side by side in the same room? Tap the **eye** button in the game header to hide your hand behind a privacy screen — tap to peek, and it re-covers automatically when your turn ends, so no one can glance over and read your cards.
 
+Sound and music are synthesized in the browser (no audio files). The background music is **adaptive** — it builds tension as the game nears its end (players down to their last cards, a +2/+4 stack piling up, someone on UNO). The header has separate toggles for music (♪) and sound effects (🔊).
+
 ## House rules
 
 - **Stacking** — answer a +2/+4 with your own to pass the accumulated penalty along.

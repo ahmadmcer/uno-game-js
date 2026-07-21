@@ -7,10 +7,20 @@ tags yet, so entries are grouped by date.
 ## 2026-07-21
 
 ### Added
+- **Adaptive background music** — synthesized in the browser (no audio files),
+  it layers up and speeds up as tension rises (players nearing their last card,
+  a +2/+4 stack pending, someone on UNO) and eases off during calm play. A
+  separate music toggle in the lobby and game headers, independent of the sound
+  effects mute; preference persists across reloads.
 - **Hide your cards** — a privacy screen for playing side by side in the same
   room. The eye toggle in the game header covers your hand; tap to peek, and it
   re-covers automatically when your turn ends so no one can glance over and read
   your cards. Local per-device preference, off by default.
+
+### Changed
+- The **UNO** button now appears only when you're down to your last card (was
+  two or fewer), so you race to call it before an opponent catches you.
+- Chat and toast notifications moved to the bottom-left corner.
 
 ## 2026-07-20
 
