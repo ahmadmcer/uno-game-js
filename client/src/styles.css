@@ -373,8 +373,8 @@ input[type='text'] {
 .gameover-leave { margin-top: 14px; }
 
 .toasts {
-  position: fixed; right: 14px; bottom: 14px; z-index: 80;
-  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+  position: fixed; left: 14px; bottom: 14px; z-index: 80;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
   pointer-events: none;
 }
 /* Sit above the chat button so toasts never hide behind it. */
@@ -400,8 +400,8 @@ input[type='text'] {
 /* ---------- Chat ---------- */
 
 .chat {
-  position: fixed; right: 14px; bottom: 14px; z-index: 70;
-  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  position: fixed; left: 14px; bottom: 14px; z-index: 70;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
 }
 .chat-fab {
   width: 52px; height: 52px;
