@@ -140,7 +140,7 @@ export default function GameTable({ room, game, me, dealKey, onLeave }) {
             Keep it
           </button>
         )}
-        {!game.winnerId && meState && game.hand.length > 0 && game.hand.length <= 2 && !meState.unoCalled && (
+        {!game.winnerId && meState && game.hand.length === 1 && !meState.unoCalled && (
           <button className="btn uno-btn" onClick={() => socket.emit('game:uno')}>UNO!</button>
         )}
         {!game.winnerId && vulnerable && (
